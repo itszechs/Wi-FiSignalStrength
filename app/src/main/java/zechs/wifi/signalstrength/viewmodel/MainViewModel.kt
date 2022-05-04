@@ -27,7 +27,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             }
             emit(finalPercent)
             Log.d("fetchSignalFlow", "percent=$finalPercent")
-            delay(500L)
+            delay(250L)
         }
     }
 }

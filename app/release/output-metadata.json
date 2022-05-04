@@ -11,9 +11,9 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
-      "outputFile": "zechs.wifi.signalstrength-1-release.apk"
+      "versionCode": 2,
+      "versionName": "1.0.1",
+      "outputFile": "zechs.wifi.signalstrength-2-release.apk"
     }
   ],
   "elementType": "File"

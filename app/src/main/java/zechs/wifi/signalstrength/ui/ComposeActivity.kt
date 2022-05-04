@@ -8,14 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import zechs.wifi.signalstrength.ui.theme.WiFiSignalStrengthTheme
 import zechs.wifi.signalstrength.viewmodel.MainViewModel
 
@@ -27,6 +23,9 @@ class ComposeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val strengthValue by mainViewModel
+                .fetchSignalStrength().collectAsState(initial = 0)
+
             WiFiSignalStrengthTheme {
                 Column(
                     modifier = Modifier
@@ -35,15 +34,10 @@ class ComposeActivity : ComponentActivity() {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    var strengthValue by remember { mutableStateOf(0) }
-                    lifecycleScope.launch {
-                        mainViewModel.fetchSignalStrength().collect {
-                            strengthValue = it
-                        }
-                    }
                     CustomComponent(indicatorValue = strengthValue)
                 }
             }
+
         }
     }
 }
