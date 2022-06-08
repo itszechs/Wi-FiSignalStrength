@@ -1,11 +1,13 @@
-package zechs.wifi.signalstrength.ui
+package zechs.wifi.signalstrength.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,22 +21,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import zechs.wifi.signalstrength.ui.theme.*
 
 
 @Composable
 fun CustomComponent(
-    canvasSize: Dp = 300.dp,
     indicatorValue: Int = 0,
     maxIndicatorValue: Int = 100,
     backgroundIndicatorColor: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
     backgroundIndicatorStrokeWidth: Float = 100f,
-    foregroundIndicatorColor: Color = MaterialTheme.colors.primary,
     foregroundIndicatorStrokeWidth: Float = 100f,
     bigTextFontSize: TextUnit = MaterialTheme.typography.h4.fontSize,
     bigTextColor: Color = MaterialTheme.colors.onSurface,
@@ -43,6 +44,18 @@ fun CustomComponent(
     smallTextFontSize: TextUnit = MaterialTheme.typography.h6.fontSize,
     smallTextColor: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.3f)
 ) {
+
+    val configuration = LocalConfiguration.current
+
+    val canvasSize = when (configuration.orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+            configuration.screenHeightDp.toDouble()
+        }
+        else -> {
+            configuration.screenWidthDp * 0.85
+        }
+    }
+
     var allowedIndicatorValue by remember {
         mutableStateOf(maxIndicatorValue)
     }
@@ -78,9 +91,23 @@ fun CustomComponent(
         animationSpec = tween(500)
     )
 
+    var foregroundIndicatorColor by remember {
+        mutableStateOf(Excellent_100)
+    }
+
+    foregroundIndicatorColor = when (percentage.toInt()) {
+        in 0..20 -> Poor_20
+        in 20..40 -> Better_40
+        in 40..60 -> Medium_60
+        in 60..80 -> Good_80
+        in 80..100 -> Excellent_100
+        else -> Excellent_100
+    }
+
     Column(
         modifier = Modifier
-            .size(canvasSize)
+            .size(canvasSize.dp)
+            .padding(16.dp)
             .drawBehind {
                 val componentSize = size / 1.25f
                 backgroundIndicator(
